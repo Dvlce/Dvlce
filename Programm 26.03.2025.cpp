@@ -1,15 +1,16 @@
 /*
 
 Date: 	26/03/2025
-PGM:	Definito un vettore (vet) di 20, sviluppare un algoritmo in linguaggio C++ che consente di :
+Task:
 
-	a. Caricare il vettore (vet) con elementi random compresi tra 0 e 100
-	0) Comparare il valore presente nel vettore con l’indice di posizione., se i valori sono uguali,
+Create an array (vet) of size 20 and fill it with random values between 0 and 100.
+Compare each element in the array with its index (position). 
 
-indicare 1, in un vettore d’appoggio precedentemente creato, In caso contrario indicare “0”
+	If the value at an index is equal to the index, store 1 in a separate helper array (support). 
+	If the values are not equal, store 0.
 
-	b. Stampare entrambi i vettori su righe separate
-	Costruire l’applicativo utilizzando esclusivamente i moduli di sottoprogramma con passaggio parametri
+Print both arrays (vet and support) on separate lines.
+Implement the solution using functions (subprograms) with parameter passing.
 	
 */
 
@@ -30,7 +31,7 @@ int main(){
 	int const INF = 0;
 	int vet_rand[DIM];
 
-// generate i vector
+// generate index vector
 	
 for(int i = 0; i < DIM; i++){
 	cout<<setw(4)<<i;
