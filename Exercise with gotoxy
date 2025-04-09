@@ -1,0 +1,211 @@
+/*
+
+Date: 09.04.2025
+Task:
+
+VERIFICA
+
+In dieci città italiane, è stata collocata una centralina di rilevazione della temperatura che comunica ogni
+giorno la temperatura media giornaliera.
+
+Definire una struttura array che contenga le seguenti città :
+
+Venezia,Roma,Palermo,Genova,Bari,Milano,Udine,Firenze,Napoli,Cagliari
+Si chiede di :
+
+• Assegnare, ad ogni città, un valore di temperatura “random” compreso tra 0 e 40 gradi di tipo reale;
+• stampare le città e le temperature in modo strutturato utilizzando la funzione gotoxy
+• ordinare, in ordine crescente, l’elenco delle città senza disallineare le rispettive temperature
+• stampare in posizione affiancata rispetto alla precedente, le città ordinate e le corrispondenti
+temperature
+• calcolare la temperature media;
+• stampare in posizione affiancata l’elenco delle città e
+▪ la temperatura se questa risulta al di sopra della temperatura media
+▪ i simboli “---“ se risulta inferiore alla temperatura media
+• stampare la città con la temperatura più alta e quella con la temperatura più bassa
+Strutturare l’applicativo utilizzando esclusivamente i moduli di sottoprogramma con particolare attenzione
+al passaggio dei parametri su cui occorrerà operare
+
+*/
+
+//LIBRARY
+
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <cmath>
+#include <ctime> 
+#include <cstdlib>
+#include <string.h>
+#include <windows.h> 
+#include <iomanip>   
+#include <locale.h>
+
+
+using namespace std;
+
+void gotoxy(int x, int y);
+
+void stampa();
+
+int main(){
+	
+srand(time(0));
+float somma;
+float temp;
+int x = 1;
+int y = 2;
+int const DIM = 10;	
+float vet_temp[DIM];
+int vet_cop[DIM];
+int vet_cop2[DIM];
+
+//vettore valore di 10 con nome di città
+string vet_cit[DIM] = {"VENEZIA", "ROMA", "PALERMO", "GENOVA", "BARI", "MILANO", "UDINE", "FIRENZE", "NAPOLI", "CAGLIARI"};
+
+// genero temperature random per le città
+
+for(int i = 0; i < DIM; i++){
+	vet_temp[i] = rand()%41 + 0;
+}
+
+// copia vettore temp in cop
+
+for(int i = 0; i < DIM; i++){
+	vet_cop[i] = vet_temp[i];
+}
+
+// Ordinare solo le temperature
+for (int i = 0; i < DIM - 1; i++) {
+    for (int j = 0; j < DIM - 1 - i; j++) {
+        if (vet_temp[j] > vet_temp[j + 1]) {
+            // Scambio le temperature
+            float temp = vet_cop[j];
+            vet_cop[j] = vet_cop[j + 1];
+            vet_cop[j + 1] = temp;
+
+        }
+    }
+}
+
+//temperature medie
+
+	for(int i = 0; i < DIM; i++){
+		somma += vet_temp[i];
+	}
+	
+	cout<<endl;
+	temp = somma/DIM;		
+// Città display	
+	x = 10;
+	y = y + 2;
+	gotoxy(x, y);
+	cout<<"Citta'";	
+// temperature display		
+	x = 30;
+	gotoxy(x, y);
+	cout<<"temp.";
+	
+//----------------------------------------
+
+// Città display	
+	x = 40;
+	y = y;
+	gotoxy(x, y);
+	cout<<"Citta'";
+// temperature display		
+	x = 60;
+	gotoxy(x, y);
+	cout<<"temp.";
+	
+//----------------------------------------	
+// Città display	
+	x = 70;
+	y = y;
+	gotoxy(x, y);
+	cout<<"Citta'";
+// temperature display		
+	x = 90;
+	gotoxy(x, y);
+	cout<<"temp.";
+	
+// genero uno spazio
+	x = 10;
+	y = y + 1;
+	gotoxy(x, y);
+	cout<<endl;
+	
+// tabella valori
+for(int i = 0; i < DIM; i++){
+	
+// Città	
+	x = 10;
+	y = y + 1;
+	gotoxy(x, y);
+	cout<<vet_cit[i];
+// temperature		
+	x = 30;
+	gotoxy(x, y);
+	cout<<vet_temp[i];
+		
+// Città
+	x = 40;
+	gotoxy(x, y);
+	cout<<vet_cit[i];
+	
+//temperature medie
+	x = 60;
+	gotoxy(x, y);
+		if(vet_temp[i] < temp){
+			cout<<"---";
+		}
+		else{
+			cout<<vet_temp[i];
+		}
+		
+// Città	
+	x = 70;
+	gotoxy(x, y);
+	cout<<vet_cit[i];
+// temperature		
+	x = 90;
+	gotoxy(x, y);
+	cout<<vet_temp[i];
+	
+}
+
+
+// scrivo in coordinate la temperatura
+	x = 10;
+	y = y + 5;
+	gotoxy(x, y);
+	cout<<"Temperatura media: "<<temp;
+		
+// genero uno spazio
+	x = 10;
+	y = y + 3;
+	gotoxy(x, y);
+	cout<<endl;
+
+cout<<"valori ordinati in crescente: "<<endl<<endl;
+
+
+for(int i = 0; i < DIM; i++){
+	cout<<setw(4)<<vet_cop[i];
+}
+cout<<endl;
+
+return 0;	
+}
+
+void gotoxy(int x, int y)
+{
+     HANDLE HConsole;
+     CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
+     HConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+     ConsoleInfo.dwCursorPosition.X = x;
+     ConsoleInfo.dwCursorPosition.Y = y;
+     SetConsoleCursorPosition(HConsole,ConsoleInfo.dwCursorPosition);
+}
