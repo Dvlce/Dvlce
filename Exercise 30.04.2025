@@ -1,0 +1,128 @@
+
+
+/*
+
+Una tabella riporta il nome e la velocità delle 10 auto, al momento, più veloci
+1. Koenigsegg_Jesko 500 km/h
+2. Bugatti_Chiron 490,48 km/h
+3. SSC_Tuatara 474,8 km/h
+4. Koenigsegg_Agera 447,49 km/h
+5. Bugatti_Tourbillon 446 km/h
+6. Hennessey_F5 437,1 km/h
+7. Bugatti_VSS 431,072 km/h
+8. SSC_Ultimate 412,28 km/h
+9. Rimac_Nevera 412 km/h
+10. Bugatti_Veyron 408,47 km/h
+
+
+Si chiede di :
+• Assegnare i dati ai due array i dati sopra riportati. ( NB l’assegnazione può essere fissa); (max 1 Punti)
+• Ordinare, in ordine DE Crescente, l’elenco delle auto senza disallineare le rispettive velocità; (max 1 Punti)
+• Stampare in forma tabellare, le auto ORDINATE con le rispettive velocità, utilizzando la funzione GOTOXY
+(max 1,5 Punti)
+• Calcolare la velocità media delle auto in questione; (max 1 Punto)
+• Stampare in posizione affiancata l’elenco delle auto e (max 1,5 Punti)
+▪ la rispettiva velocità se questa dovesse risultare al di sopra della velocità media calcolata
+▪ i caratteri “SM“ (Sotto Media) se dovesse risultare inferiore alla velocità media calcolata.
+• Stampare l’auto più veloce e quella meno veloce; (max 1 Punti)
+Strutturare l’applicativo utilizzando esclusivamente i moduli di sottoprogramma con particolare attenzione
+al passaggio dei parametri con i quali il modulo dovrà operare; (max 3 Punti)
+
+*/
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+
+using namespace std;
+
+void gotoxy(int x, int y);
+
+int main() {
+    srand(time(0));
+    
+    const int DIM = 10;
+    string vet_auto[DIM] = {"Koenigsegg_Jesko", "Bugatti_Chiron", "SSC_Tuatara", "Koenigsegg_Agera", "Bugatti_Tourbillon", 
+                            "Hennessey_F5", "Bugatti_VSS", "SSC_Ultimate", "Rimac_Nevera", "Bugatti_Veyron"};
+    float vet_velocita[DIM] = {500.0, 490.48, 474.8, 447.49, 446.0, 437.1, 431.072, 412.28, 412.0, 408.47};
+    
+    // Ordinamento decrescente delle velocità
+    for (int i = 0; i < DIM - 1; i++) {
+        for (int j = 0; j < DIM - 1 - i; j++) {
+            if (vet_velocita[j] < vet_velocita[j + 1]) {
+                // Scambio delle velocità
+                float tempVel = vet_velocita[j];
+                vet_velocita[j] = vet_velocita[j + 1];
+                vet_velocita[j + 1] = tempVel;
+                
+                // Scambio delle auto
+                string tempAuto = vet_auto[j];
+                vet_auto[j] = vet_auto[j + 1];
+                vet_auto[j + 1] = tempAuto;
+            }
+        }
+    }
+
+    // Calcolare la velocità media
+    float somma = 0;
+    for (int i = 0; i < DIM; i++) {
+        somma += vet_velocita[i];
+    }
+    float media = somma / DIM;
+    
+    // Stampa della tabella
+    int x = 10, y = 2;
+    gotoxy(x, y);
+    cout << "Auto";
+    x = 40;
+    gotoxy(x, y);
+    cout << "Velocita' (km/h)";
+
+    for (int i = 0; i < DIM; i++) {
+        y++;
+        x = 10;
+        gotoxy(x, y);
+        cout << vet_auto[i];
+        x = 40;
+        gotoxy(x, y);
+        cout << vet_velocita[i];
+    }
+
+    // Stampa auto sopra/sotto media
+    x = 10;
+    y += 2;
+    for (int i = 0; i < DIM; i++) {
+        gotoxy(x, y + i);
+        cout << vet_auto[i];
+        
+        x = 40;
+        gotoxy(x, y + i);
+        if (vet_velocita[i] > media) {
+            cout << vet_velocita[i] << " (Sopra Media)";
+        } else {
+            cout << vet_velocita[i] << " (SM)";
+        }
+    }
+
+    // Trova auto piu' veloce e piu' lenta
+    string auto_piu_veloce = vet_auto[0];
+    string auto_piu_lenta = vet_auto[DIM - 1];
+    float velocita_piu_veloce = vet_velocita[0];
+    float velocita_piu_lenta = vet_velocita[DIM - 1];
+
+    cout << endl << "L'auto piu' veloce: " << auto_piu_veloce << " con velocita' " << velocita_piu_veloce << " km/h" << endl;
+    cout << "L'auto piu' lenta: " << auto_piu_lenta << " con velocita' " << velocita_piu_lenta << " km/h" << endl;
+
+    return 0;
+}
+
+void gotoxy(int x, int y)
+{
+     HANDLE HConsole;
+     CONSOLE_SCREEN_BUFFER_INFO ConsoleInfo;
+     HConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+     ConsoleInfo.dwCursorPosition.X = x;
+     ConsoleInfo.dwCursorPosition.Y = y;
+     SetConsoleCursorPosition(HConsole,ConsoleInfo.dwCursorPosition);
+}
