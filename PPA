@@ -1,0 +1,191 @@
+#include <iostream>
+#include <iomanip>
+#include <windows.h>
+#include <cmath>
+
+using namespace std;
+
+void setColor(int color) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
+
+void drawLine(int length) {
+    for (int i = 0; i < length; i++) cout << "-";
+    cout << endl;
+}
+
+int main() {
+    setlocale(LC_ALL, "Italian");
+
+    float prezzoIniziale, percentuale, unita, tasse;
+    float analistiBasso, analistiMedio, analistiAlto;
+    int settimane;
+    char conferma, reinvest;
+
+    // INTESTAZIONE
+    setColor(11);
+    cout << "\n\n";
+    drawLine(60);
+    cout << setw(40) << "CALCOLATORE PPA AVANZATO" << endl;
+    drawLine(60);
+    setColor(10);
+    cout << "Versione: 1.0.3  |  Ultimo aggiornamento: Maggio 2025\n";
+    setColor(7);
+    drawLine(60);
+
+    // REGISTRO VERSIONI
+    setColor(11);
+    cout << "\n== REGISTRO VERSIONI ==\n";
+    setColor(7);
+
+    setColor(14); cout << "V.1.0.0"; setColor(7); cout << "  - Versione base" << endl;
+    setColor(8);  cout << "         Calcolo profitto settimanale, input base, nessun reinvestimento.\n";
+
+    setColor(14); cout << "V.1.0.1"; setColor(7); cout << "  - Reinvestimento & Periodicità" << endl;
+    setColor(8);  cout << "         Aggiunto reinvestimento profitti, tabelle mensili, trimestrali, annuali.\n";
+
+    setColor(14); cout << "V.1.0.2"; setColor(7); cout << "  - Scenari analisti + profitto reale" << endl;
+    setColor(8);  cout << "         Calcolo guadagno netto in euro in base agli scenari Basso/Medio/Alto.\n";
+
+    setColor(14); cout << "V.1.0.3"; setColor(7); cout << "  - Miglioramento UI e struttura codice" << endl;
+    setColor(8);  cout << "         Migliorata leggibilità, gestione input corretta, pulizia generale.\n\n";
+
+    setColor(7);  // Reset colore
+
+    // INPUT UTENTE
+    cout << "Inserisci il prezzo iniziale dell'azione: ";
+    cin >> prezzoIniziale;
+
+    cout << "Hai inserito: " << prezzoIniziale << " EUR. Confermi? (Y/N): ";
+    cin >> conferma;
+
+    if (conferma != 'Y' && conferma != 'y') {
+        cout << "Reinserisci il prezzo iniziale dell'azione: ";
+        cin >> prezzoIniziale;
+    }
+
+    cout << "Inserisci la percentuale settimanale di variazione (+/-): ";
+    cin >> percentuale;
+
+    cout << "Quante unita' sono state acquistate?: ";
+    cin >> unita;
+
+    cout << "Tasse/commissioni extra totali da sottrarre (EUR): ";
+    cin >> tasse;
+
+    cout << "Per quante settimane vuoi calcolare? (max 4): ";
+    cin >> settimane;
+    if (settimane > 4) settimane = 4;
+
+    cout << "Vuoi reinvestire i profitti ogni settimana? (Y/N): ";
+    cin >> reinvest;
+
+    float valore = prezzoIniziale;
+    float investimento = prezzoIniziale * unita;
+    float capitale = investimento;
+    float profitto = 0;
+
+    cout << "\nInserisci le stime degli analisti per valore annuale dell'azione:\n";
+    cout << "Scenario Basso (EUR): "; cin >> analistiBasso;
+    cout << "Scenario Medio (EUR): "; cin >> analistiMedio;
+    cout << "Scenario Alto  (EUR): "; cin >> analistiAlto;
+
+    // ANDAMENTO SETTIMANALE
+    cout << "\n>>> ANDAMENTO SETTIMANALE (max 4 settimane):\n";
+    drawLine(100);
+    cout << left << setw(10) << "Settimana"
+         << setw(20) << "Prezzo Attuale"
+         << setw(20) << "Capitale Totale"
+         << setw(20) << "Profitto Netto"
+         << setw(20) << "Guadagno Sett." << endl;
+    drawLine(100);
+
+    for (int i = 1; i <= settimane; i++) {
+        float valorePrecedente = valore;
+        valore *= (1 + percentuale / 100);
+
+        if (reinvest == 'Y' || reinvest == 'y') {
+            float unitaTotali = capitale / valorePrecedente;
+            capitale = unitaTotali * valore;
+        } else {
+            capitale = unita * valore;
+        }
+
+        profitto = capitale - investimento - tasse;
+
+        cout << left << setw(10) << i
+             << setw(20) << fixed << setprecision(2) << valore
+             << setw(20) << capitale
+             << setw(20) << profitto
+             << setw(20) << (capitale - investimento) << endl;
+    }
+
+    drawLine(100);
+
+    // RESOCONTO PERIODICO
+    float mensile = prezzoIniziale * pow(1 + percentuale / 100, 4);
+    float trimestrale = prezzoIniziale * pow(1 + percentuale / 100, 12);
+    float annuale = prezzoIniziale * pow(1 + percentuale / 100, 52);
+
+    float cap_mensile = (reinvest == 'Y' || reinvest == 'y') ?
+        investimento * pow(1 + percentuale / 100, 4) :
+        unita * mensile;
+    float cap_trimestrale = (reinvest == 'Y' || reinvest == 'y') ?
+        investimento * pow(1 + percentuale / 100, 12) :
+        unita * trimestrale;
+    float cap_annuale = (reinvest == 'Y' || reinvest == 'y') ?
+        investimento * pow(1 + percentuale / 100, 52) :
+        unita * annuale;
+
+    cout << "\n>>> RESOCONTO PERIODICO:\n";
+    drawLine(80);
+    cout << left << setw(25) << "Periodo"
+         << setw(20) << "Prezzo Stimato"
+         << setw(20) << "Capitale Stimato" << endl;
+    drawLine(80);
+    cout << left << setw(25) << "1 Mese (4 sett)"
+         << setw(20) << mensile
+         << setw(20) << cap_mensile << endl;
+    cout << left << setw(25) << "3 Mesi (12 sett)"
+         << setw(20) << trimestrale
+         << setw(20) << cap_trimestrale << endl;
+    cout << left << setw(25) << "1 Anno (52 sett)"
+         << setw(20) << annuale
+         << setw(20) << cap_annuale << endl;
+    drawLine(80);
+
+    // SCENARI ANALISTI
+    cout << "\n>>> SCENARI ANALISTI PER 1 ANNO (in base all'investimento):\n";
+    drawLine(100);
+    cout << left << setw(25) << "Scenario"
+         << setw(20) << "Valore Annuale"
+         << setw(20) << "Capitale Stimato"
+         << setw(20) << "Profitto Netto" << endl;
+    drawLine(100);
+
+    float capAnalBasso = analistiBasso * unita;
+    float profittoBasso = capAnalBasso - investimento - tasse;
+    cout << left << setw(25) << "Scenario Basso"
+         << setw(20) << analistiBasso
+         << setw(20) << capAnalBasso
+         << setw(20) << profittoBasso << endl;
+
+    float capAnalMedio = analistiMedio * unita;
+    float profittoMedio = capAnalMedio - investimento - tasse;
+    cout << left << setw(25) << "Scenario Medio"
+         << setw(20) << analistiMedio
+         << setw(20) << capAnalMedio
+         << setw(20) << profittoMedio << endl;
+
+    float capAnalAlto = analistiAlto * unita;
+    float profittoAlto = capAnalAlto - investimento - tasse;
+    cout << left << setw(25) << "Scenario Alto"
+         << setw(20) << analistiAlto
+         << setw(20) << capAnalAlto
+         << setw(20) << profittoAlto << endl;
+
+    drawLine(100);
+
+    cout << "\n>>> FINE CALCOLO. GRAZIE PER AVER USATO IL CALCOLATORE PPA V.1.0.3\n";
+    return 0;
+}
