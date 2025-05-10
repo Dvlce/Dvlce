@@ -1,13 +1,7 @@
-array 100 el
-input rand
 
-stamp_vet 
-5 spazi in gotoxy tra un elemento e l'altro
-ordin_vet => decrescente
-richiama_vet 
-
-menù iniziale
-1 carica dati
-2 stampa dati
-3 ordina dati e stampa dati
-4 esci
+2 vettori di tipo intero 20 elementi 
+vet_moneta1
+vet_moneta2
+inizializzo in maniera casuale (rand)
+ogni elemento rappresenta il lancio della moneta
+dunque testa o croce
