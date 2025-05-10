@@ -189,3 +189,7 @@ int main() {
     cout << "\n>>> FINE CALCOLO. GRAZIE PER AVER USATO IL CALCOLATORE PPA V.1.0.3\n";
     return 0;
 }
+
+
+//profitto-passivo-azionario
+//calcolatore ∆∆∆∆∆
